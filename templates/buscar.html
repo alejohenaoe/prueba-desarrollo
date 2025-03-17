@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>
+    <div class="mt-3">
+      ¡Bienvenido, {{ current_user.nombre }}!
+    </div>
+  </h1>
+  <hr>
+  <div class="row">
+    <!-- Cuadro para Libros Prestados -->
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="my-0">Tus Libros Prestados</h4>
+        </div>
+        <div class="card-body">
+          {% if borrowed_books %}
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Fecha Devolución</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for libro in borrowed_books %}
+              <tr>
+                <td>{{ libro.nombre }}</td>
+                <td>{{ libro.fecha_devolucion.strftime('%Y-%m-%d') if libro.fecha_devolucion }}</td>
+                <td>
+                  <a href="{{ url_for('devolver', libro_id=libro.id) }}" class="btn btn-warning btn-sm">Devolver</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+            <p class="text-muted">No tienes libros prestados.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <!-- Cuadro para Buscar y Ver Libros -->
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h4 class="my-0">Buscar y Ver Libros</h4>
+        </div>
+        <div class="card-body">
+          <!-- Formulario de Búsqueda -->
+          <form method="POST" class="mb-3">
+            <div class="input-group">
+              <input type="text" name="criterio" class="form-control" placeholder="Buscar por nombre o autor" required>
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Buscar</button>
+              </div>
+            </div>
+          </form>
+          <!-- Resultados de Búsqueda -->
+          {% if search_results is not none %}
+            <h5>Resultados de búsqueda</h5>
+            {% if search_results %}
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Disponibilidad</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for libro in search_results %}
+                  <tr>
+                    <td>{{ libro.nombre }}</td>
+                    <td>{{ libro.autor }}</td>
+                    <td>
+                      {% if libro.estado == 'disponible' %}
+                        Disponible
+                      {% elif libro.usuario_id == current_user.id %}
+                        Prestado por ti
+                      {% else %}
+                        No disponible
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if libro.estado == 'disponible' %}
+                        <a href="{{ url_for('prestar', libro_id=libro.id) }}" class="btn btn-success btn-sm">Prestar</a>
+                      {% elif libro.usuario_id == current_user.id %}
+                        <span class="text-info">Prestado por ti</span>
+                      {% else %}
+                        <span class="text-danger">No disponible</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% else %}
+              <p class="text-muted">No se encontraron resultados.</p>
+            {% endif %}
+          {% endif %}
+          <hr>
+          <!-- Lista Paginada de Todos los Libros -->
+          <h5>Todos los Libros</h5>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Disponibilidad</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for libro in libros_paginated.items %}
+              <tr>
+                <td>{{ libro.nombre }}</td>
+                <td>{{ libro.autor }}</td>
+                <td>
+                  {% if libro.estado == 'disponible' %}
+                    Disponible
+                  {% elif libro.usuario_id == current_user.id %}
+                    Prestado por ti
+                  {% else %}
+                    No disponible
+                  {% endif %}
+                </td>
+                <td>
+                  {% if libro.estado == 'disponible' %}
+                    <a href="{{ url_for('prestar', libro_id=libro.id) }}" class="btn btn-success btn-sm">Prestar</a>
+                  {% elif libro.usuario_id == current_user.id %}
+                    <span class="text-info">Prestado por ti</span>
+                  {% else %}
+                    <span class="text-danger">No disponible</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <!-- Navegación de Paginación -->
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              {% if libros_paginated.has_prev %}
+              <li class="page-item">
+                <a class="page-link" href="{{ url_for('buscar', page=libros_paginated.prev_num) }}">Anterior</a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">Anterior</span>
+              </li>
+              {% endif %}
+              
+              {% for page_num in libros_paginated.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                  {% if page_num == libros_paginated.page %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                  </li>
+                  {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="{{ url_for('buscar', page=page_num) }}">{{ page_num }}</a>
+                  </li>
+                  {% endif %}
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+              {% endfor %}
+              
+              {% if libros_paginated.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="{{ url_for('buscar', page=libros_paginated.next_num) }}">Siguiente</a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">Siguiente</span>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div> <!-- Fin del cuadro Buscar y Ver Libros -->
+  </div> <!-- Fin de la fila -->
+</div> <!-- Fin del container -->
+{% endblock %}

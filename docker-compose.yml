@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - SQLALCHEMY_DATABASE_URI=postgresql://biblioteca_owner:npg_oh3myqZSAT8g@ep-shy-tree-a5nwg95y-pooler.us-east-2.aws.neon.tech/biblioteca?sslmode=require
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_USER=miusuario
+      - POSTGRES_PASSWORD=miclave
+      - POSTGRES_DB=librarydb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
