@@ -21,7 +21,61 @@ Para el desarrollo de esta aplicación realicé un análisis de requerimientos q
 - **Visualización de Libros:**
   - Como usuario, quiero ver los libros que he prestado, junto con la fecha límite para la devolución.
   - Además, quiero ver el catálogo completo de libros paginado (10 libros por página).
+# Diseño de Modelos de la Base de Datos
+---
 
+## Modelo `Usuario`
+
+- **id**: Identificador único (clave primaria).
+- **nombre**: Nombre del usuario.
+- **apellido**: Apellido del usuario.
+- **email**: Correo electrónico (único).
+- **password**: Contraseña encriptada.
+
+**Relación:**  
+Un usuario puede tener muchos libros prestados.
+
+---
+
+## Modelo `Libro`
+
+- **id**: Identificador único (clave primaria).
+- **nombre**: Título del libro.
+- **autor**: Nombre del autor.
+- **fecha_publicacion**: Fecha de publicación del libro.
+- **estado**: Estado del libro (puede ser `disponible` o `no disponible`).
+- **usuario_id**: Clave foránea que referencia al `id` del Usuario. Es nulo cuando el libro está disponible.
+- **fecha_devolucion**: Fecha límite para la devolución del libro.
+
+**Relación:**  
+Cada libro, cuando está prestado, se asocia a un único usuario a través del campo `usuario_id`.
+
+---
+
+## Diagrama Entidad-Relación
+
+A continuación se muestra un diagrama entidad-relación utilizando la sintaxis de Mermaid:
+
+```mermaid
+erDiagram
+    USUARIO {
+        int id PK "Primary Key"
+        string nombre
+        string apellido
+        string email
+        string password
+    }
+    LIBRO {
+        int id PK "Primary Key"
+        string nombre
+        string autor
+        date fecha_publicacion
+        string estado
+        int usuario_id FK "Foreign Key (nullable)"
+        date fecha_devolucion
+    }
+    USUARIO ||--o{ LIBRO : "prestado"
+```
 ## Diseño de Base de Datos
 
 La base de datos fue diseñada usando PostgreSQL y consta de dos tablas principales:
@@ -115,60 +169,5 @@ Para garantizar que la aplicación satisficiera las necesidades del usuario, def
 
 ---
 
-
-# Diseño de Modelos de la Base de Datos
----
-
-## Modelo `Usuario`
-
-- **id**: Identificador único (clave primaria).
-- **nombre**: Nombre del usuario.
-- **apellido**: Apellido del usuario.
-- **email**: Correo electrónico (único).
-- **password**: Contraseña encriptada.
-
-**Relación:**  
-Un usuario puede tener muchos libros prestados.
-
----
-
-## Modelo `Libro`
-
-- **id**: Identificador único (clave primaria).
-- **nombre**: Título del libro.
-- **autor**: Nombre del autor.
-- **fecha_publicacion**: Fecha de publicación del libro.
-- **estado**: Estado del libro (puede ser `disponible` o `no disponible`).
-- **usuario_id**: Clave foránea que referencia al `id` del Usuario. Es nulo cuando el libro está disponible.
-- **fecha_devolucion**: Fecha límite para la devolución del libro.
-
-**Relación:**  
-Cada libro, cuando está prestado, se asocia a un único usuario a través del campo `usuario_id`.
-
----
-
-## Diagrama Entidad-Relación
-
-A continuación se muestra un diagrama entidad-relación utilizando la sintaxis de Mermaid:
-
-```mermaid
-erDiagram
-    USUARIO {
-        int id PK "Primary Key"
-        string nombre
-        string apellido
-        string email
-        string password
-    }
-    LIBRO {
-        int id PK "Primary Key"
-        string nombre
-        string autor
-        date fecha_publicacion
-        string estado
-        int usuario_id FK "Foreign Key (nullable)"
-        date fecha_devolucion
-    }
-    USUARIO ||--o{ LIBRO : "prestado"
 
 
