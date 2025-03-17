@@ -146,7 +146,8 @@ def devolver(libro_id):
     return redirect(url_for('buscar'))
 
 if __name__ == '__main__':
-    # Crea las tablas (solo la primera vez o cuando modifiques los modelos)
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('FLASK_ENV', 'development') == 'development'
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
