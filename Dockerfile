@@ -12,4 +12,5 @@ ENV FLASK_RUN_HOST=0.0.0.0
 
 EXPOSE 5000
 
-CMD ["gunicorn", "app.app:app", "--bind", "0.0.0.0:$PORT"]
+CMD gunicorn app.app:app --bind 0.0.0.0:$PORT
+
