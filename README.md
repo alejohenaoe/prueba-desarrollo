@@ -75,6 +75,110 @@ Para garantizar que la aplicación satisficiera las necesidades del usuario, def
 - **Contenerización:** Docker y Docker Compose para el despliegue en contenedores.
 - **Control de Versiones:** Git y GitHub.
 
+
 ## Instrucciones de Ejecución
 
 ### Ejecución Local
+
+1. Clona el repositorio:
+   - git clone https://github.com/alejohenaoe/prueba-desarrollo.git
+
+2. Ingresa al directorio del proyecto:
+   - cd prueba-desarrollo
+
+3. Crea el entorno virtual:
+   - python -m venv venv
+
+4. Activa el entorno virtual:
+   - En Linux/Mac: source venv/bin/activate
+   - En Windows: venv\Scripts\activate
+
+5. Instala las dependencias:
+   - pip install -r requirements.txt
+
+6. Configura la conexión a la base de datos:
+   - En el archivo `app.py` se define la variable `SQLALCHEMY_DATABASE_URI` usando una variable de entorno. Puedes modificarla o exportarla en tu terminal:
+     - export SQLALCHEMY_DATABASE_URI=postgresql://usuario:contraseña@localhost:5432/librarydb
+
+7. Ejecuta la aplicación:
+   - flask run
+     (o, si prefieres usar el intérprete del entorno virtual: python -m flask run)
+
+### Ejecución con Docker
+
+1. Asegúrate de tener Docker y Docker Compose instalados en tu sistema.
+
+2. Desde la raíz del proyecto, ejecuta:
+   - docker-compose up --build
+
+3. Accede a la aplicación en el puerto configurado (por ejemplo, http://localhost:5001).
+
+---
+
+## Documentación de app.py
+
+El archivo `app.py` es el corazón de la aplicación y se encarga de:
+
+- Configurar el servidor Flask.
+- Conectar a la base de datos PostgreSQL mediante SQLAlchemy.
+- Gestionar la autenticación y las sesiones con Flask-Login.
+- Definir los modelos de datos y las rutas de la aplicación.
+
+### Modelos
+
+# Diseño de Modelos de la Base de Datos
+---
+
+## Modelo `Usuario`
+
+- **id**: Identificador único (clave primaria).
+- **nombre**: Nombre del usuario.
+- **apellido**: Apellido del usuario.
+- **email**: Correo electrónico (único).
+- **password**: Contraseña encriptada.
+
+**Relación:**  
+Un usuario puede tener muchos libros prestados.
+
+---
+
+## Modelo `Libro`
+
+- **id**: Identificador único (clave primaria).
+- **nombre**: Título del libro.
+- **autor**: Nombre del autor.
+- **fecha_publicacion**: Fecha de publicación del libro.
+- **estado**: Estado del libro (puede ser `disponible` o `no disponible`).
+- **usuario_id**: Clave foránea que referencia al `id` del Usuario. Es nulo cuando el libro está disponible.
+- **fecha_devolucion**: Fecha límite para la devolución del libro.
+
+**Relación:**  
+Cada libro, cuando está prestado, se asocia a un único usuario a través del campo `usuario_id`.
+
+---
+
+## Diagrama Entidad-Relación
+
+A continuación se muestra un diagrama entidad-relación utilizando la sintaxis de Mermaid:
+
+```mermaid
+erDiagram
+    USUARIO {
+        int id PK "Primary Key"
+        string nombre
+        string apellido
+        string email
+        string password
+    }
+    LIBRO {
+        int id PK "Primary Key"
+        string nombre
+        string autor
+        date fecha_publicacion
+        string estado
+        int usuario_id FK "Foreign Key (nullable)"
+        date fecha_devolucion
+    }
+    USUARIO ||--o{ LIBRO : "prestado"
+
+
