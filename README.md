@@ -115,16 +115,6 @@ Para garantizar que la aplicación satisficiera las necesidades del usuario, def
 
 ---
 
-## Documentación de app.py
-
-El archivo `app.py` es el corazón de la aplicación y se encarga de:
-
-- Configurar el servidor Flask.
-- Conectar a la base de datos PostgreSQL mediante SQLAlchemy.
-- Gestionar la autenticación y las sesiones con Flask-Login.
-- Definir los modelos de datos y las rutas de la aplicación.
-
-### Modelos
 
 # Diseño de Modelos de la Base de Datos
 ---
