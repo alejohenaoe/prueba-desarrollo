@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>{% block title %}Biblioteca{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
-  <!-- Bootstrap CSS-->
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- FontAwesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{{ url_for('buscar') }}">Biblioteca</a>
-    <!-- Botón para desplegar el menú en móviles -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -54,10 +55,32 @@
   
     {% block content %}{% endblock %}
   </div>
-  
+
+  <!-- Footer -->
+  <footer class="footer mt-5 py-3 bg-light text-center">
+    <div class="container">
+      <p class="mb-1">Prueba de conocimientos realizada para la empresa <strong>Grupo de Negocios Temporales</strong></p>
+      <p class="mb-1">Desarrollado por <strong>Alejandro Henao Echeverri</strong></p>
+      <p>
+        <a href="https://github.com/alejohenaoe" target="_blank" class="mx-2 text-dark">
+          <i class="fab fa-github"></i> GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/alejandro-henao-echeverri-1a504a2a4" target="_blank" class="mx-2 text-dark">
+          <i class="fab fa-linkedin"></i> LinkedIn
+        </a>
+      </p>
+      <p id="fecha" class="text-muted small"></p>
+    </div>
+  </footer>
+
   <!-- Bootstrap JS y dependencias -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Script para mostrar la fecha actual -->
+  <script>
+    document.getElementById('fecha').textContent = "Fecha: " + new Date().toLocaleDateString();
+  </script>
 </body>
 </html>
