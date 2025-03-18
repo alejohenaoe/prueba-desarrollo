@@ -68,7 +68,6 @@
                   <tr>
                     <th>Título</th>
                     <th>Autor</th>
-                    <th>Disponibilidad</th>
                     <th>Acción</th>
                   </tr>
                 </thead>
@@ -77,15 +76,6 @@
                   <tr>
                     <td>{{ libro.nombre }}</td>
                     <td>{{ libro.autor }}</td>
-                    <td>
-                      {% if libro.estado == 'disponible' %}
-                        Disponible
-                      {% elif libro.usuario_id == current_user.id %}
-                        Prestado por ti
-                      {% else %}
-                        No disponible
-                      {% endif %}
-                    </td>
                     <td>
                       {% if libro.estado == 'disponible' %}
                         <a href="{{ url_for('prestar', libro_id=libro.id) }}" class="btn btn-success btn-sm">Prestar</a>
@@ -111,7 +101,6 @@
               <tr>
                 <th>Título</th>
                 <th>Autor</th>
-                <th>Disponibilidad</th>
                 <th>Acción</th>
               </tr>
             </thead>
@@ -120,15 +109,6 @@
               <tr>
                 <td>{{ libro.nombre }}</td>
                 <td>{{ libro.autor }}</td>
-                <td>
-                  {% if libro.estado == 'disponible' %}
-                    Disponible
-                  {% elif libro.usuario_id == current_user.id %}
-                    Prestado por ti
-                  {% else %}
-                    No disponible
-                  {% endif %}
-                </td>
                 <td>
                   {% if libro.estado == 'disponible' %}
                     <a href="{{ url_for('prestar', libro_id=libro.id) }}" class="btn btn-success btn-sm">Prestar</a>
